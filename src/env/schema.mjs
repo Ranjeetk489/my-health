@@ -18,7 +18,6 @@ export const serverSchema = z.object({
   GOOGLE_CLIENT_SECRET: z.string(),
   GOOGLE_CONSENT_CLIENT_ID:z.string(),
   GOOGLE_CONSENT_CLIENT_SECRET:z.string(),
-  GOOGLE_CONSENT_CLIENT_TOKEN:z.string(),
 });
 
 /**

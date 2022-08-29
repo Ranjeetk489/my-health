@@ -10,8 +10,7 @@ import { prisma } from "../../../server/db/client";
 import { env } from "../../../env/server.mjs";
 
 
-console.log(env.GITHUB_CLIENT_ID);
-console.log(env.GITHUB_CLIENT_SECRET)
+
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
   callbacks: {

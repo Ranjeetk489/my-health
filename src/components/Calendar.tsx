@@ -1,46 +1,52 @@
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from 'moment';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import withDragAndDrop, { withDragAndDropProps } from 'react-big-calendar/lib/addons/dragAndDrop'
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
 import useSWR from 'swr'
 import { useRouter } from "next/router";
-import { sendToken } from "../utils/googleApis";
 import { trpc } from "../utils/trpc";
+import {getCookie, getCookies, hasCookie} from "cookies-next";
 
 
-const fetcher = (...args) => fetch(...args).then((res) => res.json())
+
 const localizer = momentLocalizer(moment);
 
 const MyCalendar = (props) => {
     const router = useRouter();
-    // const {data , error} = useSWR('api/consent', fetcher);
+    
+    const [authCode, setAuthCode] = useState("");
+    const [token , setToken] = useState();
+    const hello = trpc.useQuery(["example.hello", {text:"ranjeet"}])
+    const {data, refetch ,isLoading, isFetching } = trpc.useQuery(["googleApi.consent"],  {enabled:false, refetchOnWindowFocus:false})
+    const getTokens= trpc.useQuery(["googleApi.getTokens", {authCode}],  {enabled:false, refetchOnWindowFocus:false})
+    const calEvents= trpc.useQuery(["googleApi.getEvents"],  {enabled:false, refetchOnWindowFocus:false, })
+    
+    useEffect(()=> {
+        sendToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[authCode])
     
 
-    
-    const handleClick =  async () => {
-        // const res = await fetch('api/consent')
-        // const url = await res.json();
-        // router.push(url)
-        
-        console.log(data);
-        console.log(status);
+    if(data && !isFetching && !isLoading) {
+        router.push(data); 
     }
     
-    const url = router.asPath;
-    const token = url.match(/code=/)
-    if(token){
-        fetch("api/setCredentials", {
-            method: "POST",
-            mode: "cors",
-            credentials: 'same-origin',
-            body: JSON.stringify({credential:token.input})
-        })
+    function sendToken() {
+        const isAuthCode = router.asPath.match(/code=/);
+        if(isAuthCode?.input && isAuthCode?.index)  {
+            const authCodeStart = isAuthCode?.input.slice(isAuthCode?.index+5)
+            const authCodeEnd = authCodeStart.match(/&scope/);
+            const tempAuthCode:string = authCodeStart.slice(0, authCodeEnd?.index);
+
+            setAuthCode(tempAuthCode);
+            getTokens.refetch();
+        }
     }
     
 
-
+    // console.log(calEvents.);
     const [events, setEvents] = useState<Event[]>([
         {
             title: 'Learn cool stuff',
@@ -49,21 +55,21 @@ const MyCalendar = (props) => {
         },
     ])
 
-    const onEventResize: withDragAndDropProps['onEventResize'] = data => {
-        const { start, end } = data
+    // const onEventResize: withDragAndDropProps['onEventResize'] = data => {
+    //     const { start, end } = data
 
-        setEvents(currentEvents => {
-            const firstEvent = {
-                start: new Date(start),
-                end: new Date(end),
-            }
-            return [...currentEvents, firstEvent]
-        })
-    }
+    //     setEvents(currentEvents => {
+    //         const firstEvent = {
+    //             start: new Date(start),
+    //             end: new Date(end),
+    //         }
+    //         return [...currentEvents, firstEvent]
+    //     })
+    // }
 
-    const onEventDrop: withDragAndDropProps['onEventDrop'] = data => {
-        console.log(data)
-    }
+    // const onEventDrop: withDragAndDropProps['onEventDrop'] = data => {
+    //     console.log(data)
+    // }
 
     return (
         <div>
@@ -74,14 +80,16 @@ const MyCalendar = (props) => {
                 className="w-[60vw] h-[60vh]"
 
             />
-            <button onClick={handleClick}>Authorize</button>
+            <button onClick={() => refetch()}>Authorize</button>
+            <button onClick= {() => calEvents.refetch()}>Fetch Events</button>
         </div>
     )
 }
 
 
-
-
+export const getServerSideProps = (context) => {
+    console.log("cookies",getCookies())
+}   
 
 
 
