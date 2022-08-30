@@ -1,104 +1,51 @@
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from 'moment';
-import { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import withDragAndDrop, { withDragAndDropProps } from 'react-big-calendar/lib/addons/dragAndDrop'
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.css'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import useSWR from 'swr'
 import { useRouter } from "next/router";
 import { trpc } from "../utils/trpc";
 import {getCookie, getCookies, hasCookie} from "cookies-next";
-import { fetchEvents } from "../utils/googleApis";
-import { RRule, RRuleSet, rrulestr } from 'rrule'
-
+import { fetchEvents } from "../utils/googleApis.utils";
+import { NextPage } from "next";
+import { FcGoogle } from "react-icons/fc";
 
 
 const localizer = momentLocalizer(moment);
 
-const MyCalendar = (props) => {
+const MyCalendar : NextPage<Props> = ({events,getConsentUrl}) => {
     const router = useRouter();
-    const rule =  new RRule({
-        freq: RRule.DAILY,
-        dtstart: new Date(Date.UTC(2022, 7, 30, 10, 5, 0)),
-        tzid: 'Asia/Kolkata',
-        until: new Date(Date.UTC(2022, 7, 30, 3, 0, 0)),
-        count: 30,
-        interval: 1
-      })
-      
-    console.log(rule)
     const [authCode, setAuthCode] = useState("");
     const [token , setToken] = useState();
     const hello = trpc.useQuery(["example.hello", {text:"ranjeet"}])
     const {data, refetch ,isLoading, isFetching } = trpc.useQuery(["googleApi.consent"],  {enabled:false, refetchOnWindowFocus:false})
     const getTokens= trpc.useQuery(["googleApi.getTokens", {authCode}],  {enabled:false, refetchOnWindowFocus:false})
     const calEvents= trpc.useQuery(["googleApi.getEvents"],  {enabled:false, refetchOnWindowFocus:false, })
-    
-    useEffect(()=> {
-        sendToken();
-        if(calEvents.data) {
-            provideEvents();
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[authCode,calEvents.data])
-    
+  
 
-    if(data && !isFetching && !isLoading) {
-        router.push(data); 
+
+    //TODO: implement another side modal showing upcoming events && recurring events
+
+    if(!events){
+        return (
+            <div className="flex flex-col items-center justify-center relative w-[80vw] top-[30vh] left:[40vw]">
+                <span className="text-xl">To access Prescription tracker, kindly allow us to access your calendar by clicking the button below</span>
+                <button className="flex items-center w-fit submit-btn mt-6" onClick = {getConsentUrl.refetch} ><FcGoogle className="mr-4"/> Authorize My Health</button>
+            </div>
+        )
     }
-    
-    function sendToken() {
-        const isAuthCode = router.asPath.match(/code=/);
-        if(isAuthCode?.input && isAuthCode?.index)  {
-            const authCodeStart = isAuthCode?.input.slice(isAuthCode?.index+5)
-            const authCodeEnd = authCodeStart.match(/&scope/);
-            const tempAuthCode:string = authCodeStart.slice(0, authCodeEnd?.index);
-            setAuthCode(tempAuthCode);
-            getTokens.refetch();
-        }
-    }
-    
 
-    // console.log(calEvents.);
-    const [events, setEvents] = useState<Event[]>([
-        {
-            title: 'temporary',
-            start: new Date(),
-            end: new Date(),
-        },
-    ])
-
-    console.log(typeof(new Date()), typeof(new Date().toString()));
-    // const onEventResize: withDragAndDropProps['onEventResize'] = data => {
-    //     const { start, end } = data
-    function provideEvents(){
-        const cal = calEvents.data.map((event) => {
-                console.log(event)
-                return {
-                    title: event?.summary || "name not available",
-                    start:event?.start?.dateTime ? new Date(event?.start?.dateTime) : new Date(),
-                    end: event?.end?.dateTime?  new Date(event?.end?.dateTime)  : new Date(),
-                }
-                
-            })
-
-        setEvents(cal)
-       
-        }
-    
     return (
         <div>
             <DnDCalendar
                 localizer={localizer}
                 events={events}
-                style={{ height: "60vh" }}
-                startAccessor="start"
-                endAccessor="end"
-                className="w-[60vw] h-[60vh]"
+                style={{ height: "80vh" }}
+                className="w-[75vw]"
 
             />
-            <button onClick={() => refetch()}>Authorize</button>
-            <button onClick= {() => calEvents.refetch()}>Fetch Events</button>
+            <button onClick= {() => getConsentUrl.refetch}>Fetch Events</button>
         </div>
     )
 }

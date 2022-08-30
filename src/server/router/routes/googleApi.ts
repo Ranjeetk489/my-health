@@ -1,4 +1,4 @@
-import { generateAuthUrl, getTokens, fetchEvents } from './../../../utils/googleApis';
+import { generateAuthUrl, getTokens, fetchEvents } from '../../../utils/googleApis.utils';
 import { createRouter } from '../context';
 import {z} from "zod";
 import { createRequire } from "module";

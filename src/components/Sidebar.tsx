@@ -8,29 +8,21 @@ import { TbReport } from 'react-icons/tb';
 import { IoIosCloudUpload } from 'react-icons/io'
 
 
-
-import { NextPage } from 'next';
-
-
-
-const Sidebar: NextPage = () => {
-
+const Sidebar = () => {
     return (
-        <>
-            <div className='flex flex-col gap-3 w-[6rem] overflow-hidden shadow-2xl p-6 dark:bg-black md:hover:w-1/4 lg:hover:w-[17rem] duration-500'>
-                <SidebarItem MenuIcon={MdOutlineDashboardCustomize} menuName="Dashboard" />
-                <SidebarItem MenuIcon={BsFillCalendar3WeekFill} menuName="Calendar" />
-                <SidebarItem MenuIcon={IoIosCloudUpload} menuName="Upload Reports" />
-                <SidebarItem MenuIcon={FaPrescriptionBottleAlt} menuName="Prescription Tracker" />
-                <span className='mt-6 w-[3.5rem] text-sm text-center' >Reports</span>
-                <SidebarItem MenuIcon={TbReport} menuName="Medical Reports" />
-                <SidebarItem MenuIcon={FaWalking} menuName="Upcoming Visits" />
-                <SidebarItem MenuIcon={FaMapMarkerAlt} menuName="Hospitals Near Me" />
-                <span className='mt-6 w-[3.5rem] text-sm text-center' >Support</span>
-                <SidebarItem MenuIcon={MdMessage} menuName="Submit Feedback" />
+        <div className='flex flex-col gap-3 w-[6rem] overflow-hidden shadow-2xl p-6 dark:bg-black md:hover:w-1/4 lg:hover:w-[17rem] lg:h-[100vh] duration-700'>
+            <SidebarItem MenuIcon={MdOutlineDashboardCustomize} menuName="Dashboard" />
+            <SidebarItem MenuIcon={BsFillCalendar3WeekFill} menuName="Calendar" />
+            <SidebarItem MenuIcon={IoIosCloudUpload} menuName="Upload Reports" />
+            <SidebarItem MenuIcon={FaPrescriptionBottleAlt} menuName="Prescription Tracker" />
+            <span className='mt-6 w-[3.5rem] text-sm text-center' >Reports</span>
+            <SidebarItem MenuIcon={TbReport} menuName="Medical Reports" />
+            <SidebarItem MenuIcon={FaWalking} menuName="Upcoming Visits" />
+            <SidebarItem MenuIcon={FaMapMarkerAlt} menuName="Hospitals Near Me" />
+            <span className='mt-6 w-[3.5rem] text-sm text-center' >Support</span>
+            <SidebarItem MenuIcon={MdMessage} menuName="Submit Feedback" />
 
-            </div>
-        </>
+        </div>
     )
 }
 
@@ -39,7 +31,6 @@ export default Sidebar
 
 const SidebarItem = ({ MenuIcon, menuName }) => {
     return (
-
         <div className="flex items-center justify-start hover:text-violet-500">
             <div className="menu-icon overlay min-w-[3rem] min-h-[3rem] rounded-[2rem] hover:shadow-md relative mr-6 ">
                 <MenuIcon size={18} className=" hover:text-violet-500 absolute z-10 left-[15px] top-[15px]" />
