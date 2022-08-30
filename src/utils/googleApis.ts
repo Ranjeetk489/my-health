@@ -43,18 +43,20 @@ export const getTokens = async (authCode:string|undefined = undefined) => {
     }
 }
 
+//! to fix calendar ID by fetching calendar list first 
+//!and then searching for calendar name and updating calendarId
 //Fetches all the events on behalf of user 
 export const fetchEvents = async (token: string) =>  {
     //forms the client to intract with google server and perfroms authorization
     try {
     oAuth2Client.setCredentials({
-        calendarId: 'primary',
+        calendarId: 'oa8pgvt11je13mk6n7n0u969r8@group.calendar.google.com',
         refresh_token: token,
     });
     //accesses all the events from specified calendar in client above
     const response = await calendar.events.list({
         auth: oAuth2Client,
-        calendarId: 'primary',  
+        calendarId: 'oa8pgvt11je13mk6n7n0u969r8@group.calendar.google.com',  
     })
     return response?.data.items;
 }
