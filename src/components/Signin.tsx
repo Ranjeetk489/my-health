@@ -10,9 +10,6 @@ import { getProviders, useSession } from "next-auth/react";
 import { DiGithubBadge } from 'react-icons/di';
 
 
-
-
-
 const Signin = (props) => {
     const { signIn, providers } = props;
 
@@ -55,7 +52,6 @@ const SigninForm: NextPage = ({ signIn }) => {
     });
 
 
-
     return (
         <>
             <form onSubmit={formik.handleSubmit} className="flex flex-col">
@@ -68,12 +64,10 @@ const SigninForm: NextPage = ({ signIn }) => {
                     value={formik.values.email}
                     placeholder="Email Address"
                     className={formik.touched.email && formik.errors.email ? "" : "mb-4"}
-
                 />
                 {formik.touched.email && formik.errors.email ? (
                     <div className="text-red-500 mt-1 mb-3">{formik.errors.email}</div>
                 ) : null}
-
                 <input
                     id="password"
                     name="password"
@@ -87,7 +81,6 @@ const SigninForm: NextPage = ({ signIn }) => {
                 {formik.touched.password && formik.errors.password ? (
                     <div className="text-red-500 mt-1 mb-5">{formik.errors.password}</div>
                 ) : null}
-
                 <button type="submit" className="submit-btn">Sign In</button>
             </form>
         </>

@@ -3,36 +3,40 @@ import { useEffect, useState } from "react";
 import MyCalendar from "../components/Calendar";
 import Sidebar from "../components/Sidebar";
 import { trpc } from "../utils/trpc";
-import {sendToken, provideEvents} from "../utils/client/prescrption.utils";
+import {sendToken, provideEvents, getEvents} from "../utils/client/prescrption.utils";
+import { fetchEvents } from "../utils/googleApis.utils";
+import { useOauthContext } from "../hooks/useOauth";
+import { getEventListeners } from "events";
 
 
 
 const Prescription = (props) => {
+
+    // refactor this to custom hooks
     const router = useRouter();
     const [authCode, setAuthCode] = useState("");
     const [token , setToken] = useState();
-    const hello = trpc.useQuery(["example.hello", {text:"ranjeet"}])
     const getConsentUrl = trpc.useQuery(["googleApi.consent"],  {enabled:false, refetchOnWindowFocus:false})
     const getTokens= trpc.useQuery(["googleApi.getTokens", {authCode}],  {enabled:false, refetchOnWindowFocus:false})
     const calEvents= trpc.useQuery(["googleApi.getEvents"],  {enabled:false, refetchOnWindowFocus:false, })
-    const [events, setEvents] = useState<Event[]>();
+    const isAuthorized = trpc.useQuery(["googleApi.isAuthorized"],  {enabled:true, refetchOnWindowFocus:true, })
+    const [events, setEvents] = useState();
 
 
-    useEffect(()=> {
-        //* function to extract and send authCode 
-        sendToken(getTokens,setAuthCode,router);
-        if(calEvents.data) {
-             //* To fetch events on behalf of the user and setEvent state
-            provideEvents(setEvents, calEvents);
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[authCode,calEvents.data])
+    const isAuthCode = router.asPath.match(/code=/);
+    console.log(isAuthCode)
     
+    useEffect(()=> {
+        //* function to get the auth code from the url 
+        //* to setRouterPath and generate tokens and fetch calendar events 
+        getEvents(isAuthCode, setAuthCode, router,getTokens,calEvents,setEvents);
+
+    },[isAuthCode])
 
     if(getConsentUrl.data) {
-        router.push(getConsentUrl.data); 
+        router.push(getConsentUrl.data);
+        
     }
-
     return (
         <div className= "flex gap-4">
             <Sidebar />

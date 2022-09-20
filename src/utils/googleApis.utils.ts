@@ -8,7 +8,7 @@ import { env } from "../env/server.mjs";
 const oAuth2Client = new google.auth.OAuth2(
     env.GOOGLE_CONSENT_CLIENT_ID,
     env.GOOGLE_CONSENT_CLIENT_SECRET,
-    "https://3000-scottcoates-soloproject-yf30d7c0vrz.ws-us63.gitpod.io/prescription"
+    "http://localhost:3000/prescription"
 )
 
 
@@ -31,10 +31,12 @@ export const generateAuthUrl = async () => {
 //Generates access and refresh token from authentication code only once
 //further calls will throw error 400
 export const getTokens = async (authCode:string|undefined = undefined) => {
+    console.log(authCode + "authcode");
     if(authCode) {
         try{
+           
             const {tokens} = await oAuth2Client.getToken(authCode);
-            
+            console.log(tokens);
             return tokens;
         }
         catch(error) {
@@ -58,6 +60,7 @@ export const fetchEvents = async (token: string) =>  {
         auth: oAuth2Client,
         calendarId: 'primary',  
     })
+    console.log(response);
     return response?.data.items;
 }
     catch(error) {

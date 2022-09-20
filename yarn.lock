@@ -1662,8 +1662,6 @@
     "path-is-absolute" "^1.0.0"
 
 "glob@^7.1.4":
-  "integrity" "sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q=="
-  "resolved" "https://registry.npmjs.org/glob/-/glob-7.2.3.tgz"
   "version" "7.2.3"
   dependencies:
     "fs.realpath" "^1.0.0"
@@ -2697,8 +2695,6 @@
   "version" "2.0.6"
 
 "nopt@^5.0.0":
-  "integrity" "sha512-Tbj67rffqceeLpcRXrT7vKAN8CwfPeIBgM7E6iBkmKLV7bEMwpGgYLGv0jACUsECaa/vuxP0IjEont6umdMgtQ=="
-  "resolved" "https://registry.npmjs.org/nopt/-/nopt-5.0.0.tgz"
   "version" "5.0.0"
   dependencies:
     "abbrev" "1"

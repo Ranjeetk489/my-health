@@ -27,8 +27,6 @@ const Auth: NextPage = (props) => {
     console.log(data)
 
     if (status === "authenticated") {
-        // console.log(router.push("/"))
-
         return (
             <>
                 Logged In

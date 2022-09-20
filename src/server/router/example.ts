@@ -11,6 +11,7 @@ export const exampleRouter = createRouter()
     resolve({ input }) {
       return {
         greeting: `Hello ${input?.text ?? "world"}`,
+        onSuccess:"true"
       };
     },
   })

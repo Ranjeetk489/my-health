@@ -1,14 +1,3 @@
-export function sendToken(getTokens, setAuthCode, router) {
-    const isAuthCode = router.asPath.match(/code=/);
-    if (isAuthCode?.input && isAuthCode?.index) {
-        const authCodeStart = isAuthCode?.input.slice(isAuthCode?.index + 5);
-        const authCodeEnd = authCodeStart.match(/&scope/);
-        const tempAuthCode: string = authCodeStart.slice(0, authCodeEnd?.index);
-        setAuthCode(tempAuthCode);
-        getTokens.refetch();
-    }
-}
-
 
 export function provideEvents(setEvents, calEvents) {
     const cal = calEvents.data.map((event) => {
@@ -19,5 +8,24 @@ export function provideEvents(setEvents, calEvents) {
             end: event?.end?.dateTime ? new Date(event?.end?.dateTime) : new Date(),
         }
     })
-    setEvents(cal)
+    console.log(cal)
+    
+}
+
+
+export function getEvents(isAuthCode, setAuthCode, router,getTokens,calEvents,setEvents){
+    if(isAuthCode?.input && isAuthCode?.index && isAuthorized?.data) {
+        const authCodeStart = isAuthCode?.input.slice(isAuthCode?.index + 5);
+        const authCodeEnd = authCodeStart.match(/&scope/);
+        const tempAuthCode: string = authCodeStart.slice(0, authCodeEnd?.index);
+        setAuthCode(tempAuthCode);
+        router.push("/prescription");
+        getTokens.refetch();
+        calEvents.refetch();
+        setEvents(calEvents.data)
+    }
+    else {
+        calEvents.refetch();
+        setEvents(calEvents.data)
+    }
 }

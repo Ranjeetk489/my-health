@@ -5,6 +5,7 @@ import type { AppType } from "next/dist/shared/lib/utils";
 import superjson from "superjson";
 import { SessionProvider } from "next-auth/react";
 import "../styles/globals.css";
+import { OauthProvider } from "../hooks/useOauth";
 
 const MyApp: AppType = ({
   Component,
@@ -12,7 +13,9 @@ const MyApp: AppType = ({
 }) => {
   return (
     <SessionProvider session={session}>
+      <OauthProvider>
       <Component {...pageProps} />
+      </OauthProvider>
     </SessionProvider>
   );
 };
